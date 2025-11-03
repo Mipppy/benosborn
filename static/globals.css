@@ -1,0 +1,9 @@
+:root {
+    --ben-red: #ce2127;
+    --ben-blue: #193e72;   
+}
+
+.text-ben-red {color: var(--ben-red);}
+.text-ben-blue {color: var(--ben-blue);}
+.bg-ben-red {background-color: var(--ben-red);}
+.bg-ben-blue {background-color: var(--ben-blue);}

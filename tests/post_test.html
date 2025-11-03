@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Post</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; }
+    input, textarea { display: block; width: 100%; margin-bottom: 15px; padding: 8px; font-size: 14px; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    .response { margin-top: 20px; padding: 10px; border: 1px solid #ccc; white-space: pre-wrap; }
+    label { font-weight: bold; margin-bottom: 5px; display: block; }
+  </style>
+</head>
+<body>
+  <h1>Add a New Post</h1>
+
+  <form id="postForm">
+    <label>
+      Title:
+      <input type="text" name="title" placeholder="Enter title" required>
+    </label>
+
+    <label>
+      Internal Name (unique identifier):
+      <input type="text" name="internal_name" placeholder="e.g. mini_mission_statement" required>
+    </label>
+
+    <label>
+      Text Body:
+      <textarea name="text_body" rows="8" placeholder="Enter your post content" required></textarea>
+    </label>
+
+    <label>
+      Tags (comma separated):
+      <input type="text" name="tags" placeholder="e.g. mission,youth,legacy">
+    </label>
+
+    <button type="submit">Submit Post</button>
+  </form>
+
+  <div class="response" id="response"></div>
+
+  <script>
+    const form = document.getElementById('postForm');
+    const responseDiv = document.getElementById('response');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const payload = {};
+
+      formData.forEach((value, key) => {
+        payload[key] = value;
+      });
+
+      if (payload.tags) {
+        payload.tags = payload.tags.split(',').map(t => t.trim()).filter(Boolean);
+      }
+
+      try {
+        const res = await fetch('/api/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          credentials:"include"
+        });
+
+        const data = await res.json();
+        responseDiv.textContent = JSON.stringify(data, null, 2);
+
+        if (res.ok) form.reset();
+      } catch (err) {
+        responseDiv.textContent = 'Error: ' + err.message;
+      }
+    });
+  </script>
+</body>
+</html>

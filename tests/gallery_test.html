@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Upload Gallery</title>
+  <style>
+    body { font-family: Arial; max-width: 600px; margin: 50px auto; }
+    input, textarea { display: block; width: 100%; margin-bottom: 15px; padding: 8px; }
+    button { padding: 10px 20px; font-size: 16px; }
+    .response { margin-top: 20px; padding: 10px; border: 1px solid #ccc; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Upload an Image</h1>
+
+  <form id="uploadForm" enctype="multipart/form-data">
+    <label>
+      Select Image:
+      <input type="file" name="file" accept="image/*" required>
+    </label>
+
+    <label>
+      Title:
+      <input type="text" name="title" placeholder="Enter title">
+    </label>
+
+    <label>
+      Description:
+      <textarea name="description" placeholder="Enter description"></textarea>
+    </label>
+
+    <label>
+      Tags (comma separated):
+      <input type="text" name="tags" placeholder="e.g. cat,funny,2025">
+    </label>
+
+    <button type="submit">Upload</button>
+  </form>
+
+  <div class="response" id="response"></div>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    const responseDiv = document.getElementById('response');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+
+      try {
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+          credentials: "include"
+        });
+
+        const data = await res.json();
+        responseDiv.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        responseDiv.textContent = 'Error: ' + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
